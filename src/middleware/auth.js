@@ -27,6 +27,10 @@ const protect = async (req, res, next) => {
       return next(new ApiError(401, "User no longer exists"));
     }
 
+    if (!req.user.isActive) {
+      return next(new ApiError(401, "Account has been deactivated"));
+    }
+
     next();
   } catch (error) {
     next(new ApiError(401, "Not authorized to access this route"));

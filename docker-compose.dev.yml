@@ -32,7 +32,7 @@ services:
     volumes:
       - ./src:/app/src
       - backend_uploads_dev:/app/uploads
-    command: npm run dev
+    command: npx nodemon src/server.js
     networks:
       - digidittos-backend-network
 

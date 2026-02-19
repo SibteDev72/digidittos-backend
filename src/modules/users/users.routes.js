@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const usersController = require("./users.controller");
-const { updateUserValidation, userIdValidation } = require("./users.validation");
+const {
+  createUserValidation,
+  updateUserValidation,
+  userIdValidation,
+} = require("./users.validation");
 const validate = require("../../middleware/validate");
 const { protect, authorize } = require("../../middleware/auth");
 
@@ -9,11 +13,16 @@ router.use(protect);
 
 router
   .route("/")
-  .get(authorize("admin"), usersController.getAllUsers);
+  .get(authorize("admin"), usersController.getAllUsers)
+  .post(
+    authorize("admin"),
+    validate(createUserValidation),
+    usersController.createUser
+  );
 
 router
   .route("/:id")
-  .get(validate(userIdValidation), usersController.getUserById)
+  .get(authorize("admin"), validate(userIdValidation), usersController.getUserById)
   .put(
     authorize("admin"),
     validate([...userIdValidation, ...updateUserValidation]),

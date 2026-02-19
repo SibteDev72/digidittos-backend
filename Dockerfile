@@ -17,10 +17,12 @@ RUN adduser --system --uid 1001 appuser
 COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
 COPY --chown=appuser:appgroup . .
 
+RUN sed -i 's/\r$//' docker-entrypoint.sh && chmod +x docker-entrypoint.sh
 RUN mkdir -p uploads && chown appuser:appgroup uploads
 
 USER appuser
 
 EXPOSE 5000
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "src/server.js"]

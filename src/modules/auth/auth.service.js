@@ -33,6 +33,10 @@ const login = async ({ email, password }) => {
     throw new ApiError(401, "Invalid credentials");
   }
 
+  if (!user.isActive) {
+    throw new ApiError(403, "Account has been deactivated");
+  }
+
   const isMatch = await user.comparePassword(password);
   if (!isMatch) {
     throw new ApiError(401, "Invalid credentials");
