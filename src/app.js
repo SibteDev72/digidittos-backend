@@ -1,0 +1,70 @@
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const compression = require("compression");
+const cookieParser = require("cookie-parser");
+const rateLimit = require("express-rate-limit");
+const path = require("path");
+
+const config = require("./config");
+const errorHandler = require("./middleware/errorHandler");
+
+// Route imports
+const authRoutes = require("./modules/auth/auth.routes");
+const usersRoutes = require("./modules/users/users.routes");
+const contentRoutes = require("./modules/content/content.routes");
+const mediaRoutes = require("./modules/media/media.routes");
+const settingsRoutes = require("./modules/settings/settings.routes");
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(
+  cors({
+    origin: config.cors.origin,
+    credentials: true,
+  })
+);
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: { success: false, message: "Too many requests, please try again later" },
+});
+app.use("/api/", limiter);
+
+// Body parsing
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Compression
+app.use(compression());
+
+// Logging
+if (config.env === "development") {
+  app.use(morgan("dev"));
+}
+
+// Static files (uploads)
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+// API routes
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", usersRoutes);
+app.use("/api/v1/content", contentRoutes);
+app.use("/api/v1/media", mediaRoutes);
+app.use("/api/v1/settings", settingsRoutes);
+
+// Health check
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({ success: true, message: "Server is running" });
+});
+
+// Error handling
+app.use(errorHandler);
+
+module.exports = app;
