@@ -47,11 +47,10 @@ const contentSchema = new mongoose.Schema(
   }
 );
 
-contentSchema.pre("save", function (next) {
+contentSchema.pre("save", function () {
   if (this.isModified("title")) {
     this.slug = slugify(this.title, { lower: true, strict: true });
   }
-  next();
 });
 
 contentSchema.index({ slug: 1 });

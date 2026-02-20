@@ -16,6 +16,8 @@ const usersRoutes = require("./modules/users/users.routes");
 const contentRoutes = require("./modules/content/content.routes");
 const mediaRoutes = require("./modules/media/media.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
+const blogsRoutes = require("./modules/blogs/blogs.routes");
+const teamsRoutes = require("./modules/teams/teams.routes");
 
 const app = express();
 
@@ -58,6 +60,8 @@ app.use("/api/v1/users", usersRoutes);
 app.use("/api/v1/content", contentRoutes);
 app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1/settings", settingsRoutes);
+app.use("/api/v1/blogs", blogsRoutes);
+app.use("/api/v1/teams", teamsRoutes);
 
 // Health check
 app.get("/api/v1/health", (req, res) => {

@@ -1,7 +1,13 @@
 const User = require("./users.model");
 const ApiError = require("../../utils/ApiError");
 
-const getAllUsers = async ({ page = 1, limit = 10, search, role, isActive }) => {
+const getAllUsers = async ({
+  page = 1,
+  limit = 10,
+  search,
+  role,
+  isActive,
+}) => {
   const skip = (page - 1) * limit;
   const filter = {};
 
@@ -21,7 +27,11 @@ const getAllUsers = async ({ page = 1, limit = 10, search, role, isActive }) => 
   }
 
   const [users, total] = await Promise.all([
-    User.find(filter).select("-password").skip(skip).limit(limit).sort("-createdAt"),
+    User.find(filter)
+      .select("-password")
+      .skip(skip)
+      .limit(limit)
+      .sort("-createdAt"),
     User.countDocuments(filter),
   ]);
 
@@ -71,7 +81,10 @@ const updateUser = async (id, updateData) => {
 
   // Prevent demoting the last admin
   if (user.role === "admin" && updateData.role && updateData.role !== "admin") {
-    const adminCount = await User.countDocuments({ role: "admin", isActive: true });
+    const adminCount = await User.countDocuments({
+      role: "admin",
+      isActive: true,
+    });
     if (adminCount <= 1) {
       throw new ApiError(400, "Cannot change role of the last active admin");
     }
@@ -79,7 +92,10 @@ const updateUser = async (id, updateData) => {
 
   // Prevent deactivating the last admin
   if (user.role === "admin" && updateData.isActive === false) {
-    const adminCount = await User.countDocuments({ role: "admin", isActive: true });
+    const adminCount = await User.countDocuments({
+      role: "admin",
+      isActive: true,
+    });
     if (adminCount <= 1) {
       throw new ApiError(400, "Cannot deactivate the last active admin");
     }
@@ -87,7 +103,10 @@ const updateUser = async (id, updateData) => {
 
   // Check email uniqueness if email is being changed
   if (updateData.email && updateData.email !== user.email) {
-    const emailTaken = await User.findOne({ email: updateData.email, _id: { $ne: id } });
+    const emailTaken = await User.findOne({
+      email: updateData.email,
+      _id: { $ne: id },
+    });
     if (emailTaken) {
       throw new ApiError(400, "Email already registered");
     }
@@ -132,7 +151,10 @@ const deleteUser = async (id, requestingUserId) => {
 
   // Prevent deleting the last admin
   if (user.role === "admin") {
-    const adminCount = await User.countDocuments({ role: "admin", isActive: true });
+    const adminCount = await User.countDocuments({
+      role: "admin",
+      isActive: true,
+    });
     if (adminCount <= 1) {
       throw new ApiError(400, "Cannot delete the last active admin");
     }
@@ -141,4 +163,10 @@ const deleteUser = async (id, requestingUserId) => {
   await User.findByIdAndDelete(id);
 };
 
-module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
+module.exports = {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+};
