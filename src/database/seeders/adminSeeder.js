@@ -6,7 +6,6 @@ const ADMIN_USER = {
   name: "Admin",
   email: "admin@digidittos.com",
   password: "Password@123",
-  role: "admin",
   isActive: true,
 };
 

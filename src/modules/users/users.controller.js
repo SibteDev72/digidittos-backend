@@ -5,12 +5,11 @@ const ApiResponse = require("../../utils/ApiResponse");
 const getAllUsers = catchAsync(async (req, res) => {
   const page = parseInt(req.query.page, 10) || 1;
   const limit = parseInt(req.query.limit, 10) || 10;
-  const { search, role, isActive } = req.query;
+  const { search, isActive } = req.query;
   const { users, pagination } = await usersService.getAllUsers({
     page,
     limit,
     search,
-    role,
     isActive,
   });
   ApiResponse.paginated(res, users, pagination);

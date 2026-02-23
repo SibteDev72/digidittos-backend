@@ -13,8 +13,6 @@ const errorHandler = require("./middleware/errorHandler");
 // Route imports
 const authRoutes = require("./modules/auth/auth.routes");
 const usersRoutes = require("./modules/users/users.routes");
-const contentRoutes = require("./modules/content/content.routes");
-const mediaRoutes = require("./modules/media/media.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const blogsRoutes = require("./modules/blogs/blogs.routes");
 const teamsRoutes = require("./modules/teams/teams.routes");
@@ -58,8 +56,6 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 // API routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", usersRoutes);
-app.use("/api/v1/content", contentRoutes);
-app.use("/api/v1/media", mediaRoutes);
 app.use("/api/v1/settings", settingsRoutes);
 app.use("/api/v1/blogs", blogsRoutes);
 app.use("/api/v1/teams", teamsRoutes);

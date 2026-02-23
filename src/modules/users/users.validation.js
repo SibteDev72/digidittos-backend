@@ -22,10 +22,6 @@ const createUserValidation = [
     .withMessage("Password must contain at least one number")
     .matches(/[!@#$%^&*(),.?":{}|<>]/)
     .withMessage("Password must contain at least one special character"),
-  body("role")
-    .optional()
-    .isIn(["admin", "editor", "author", "viewer"])
-    .withMessage("Invalid role"),
   body("isActive")
     .optional()
     .isBoolean()
@@ -57,10 +53,6 @@ const updateUserValidation = [
     .withMessage("Password must contain at least one number")
     .matches(/[!@#$%^&*(),.?":{}|<>]/)
     .withMessage("Password must contain at least one special character"),
-  body("role")
-    .optional()
-    .isIn(["admin", "editor", "author", "viewer"])
-    .withMessage("Invalid role"),
   body("isActive")
     .optional()
     .isBoolean()

@@ -6,9 +6,9 @@ const {
   settingKeyValidation,
 } = require("./settings.validation");
 const validate = require("../../middleware/validate");
-const { protect, authorize } = require("../../middleware/auth");
+const { protect } = require("../../middleware/auth");
 
-router.use(protect, authorize("admin"));
+router.use(protect);
 
 router
   .route("/")

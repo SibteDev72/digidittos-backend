@@ -5,7 +5,6 @@ const getAllUsers = async ({
   page = 1,
   limit = 10,
   search,
-  role,
   isActive,
 }) => {
   const skip = (page - 1) * limit;
@@ -16,10 +15,6 @@ const getAllUsers = async ({
       { name: { $regex: search, $options: "i" } },
       { email: { $regex: search, $options: "i" } },
     ];
-  }
-
-  if (role) {
-    filter.role = role;
   }
 
   if (isActive !== undefined) {
@@ -66,7 +61,6 @@ const createUser = async (userData) => {
     _id: user._id,
     name: user.name,
     email: user.email,
-    role: user.role,
     isActive: user.isActive,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
@@ -77,28 +71,6 @@ const updateUser = async (id, updateData) => {
   const user = await User.findById(id);
   if (!user) {
     throw new ApiError(404, "User not found");
-  }
-
-  // Prevent demoting the last admin
-  if (user.role === "admin" && updateData.role && updateData.role !== "admin") {
-    const adminCount = await User.countDocuments({
-      role: "admin",
-      isActive: true,
-    });
-    if (adminCount <= 1) {
-      throw new ApiError(400, "Cannot change role of the last active admin");
-    }
-  }
-
-  // Prevent deactivating the last admin
-  if (user.role === "admin" && updateData.isActive === false) {
-    const adminCount = await User.countDocuments({
-      role: "admin",
-      isActive: true,
-    });
-    if (adminCount <= 1) {
-      throw new ApiError(400, "Cannot deactivate the last active admin");
-    }
   }
 
   // Check email uniqueness if email is being changed
@@ -116,7 +88,6 @@ const updateUser = async (id, updateData) => {
   if (updateData.password) {
     if (updateData.name !== undefined) user.name = updateData.name;
     if (updateData.email !== undefined) user.email = updateData.email;
-    if (updateData.role !== undefined) user.role = updateData.role;
     user.password = updateData.password;
     if (updateData.isActive !== undefined) {
       user.isActive = updateData.isActive;
@@ -147,17 +118,6 @@ const deleteUser = async (id, requestingUserId) => {
   // Prevent self-deletion
   if (id.toString() === requestingUserId.toString()) {
     throw new ApiError(400, "You cannot delete your own account");
-  }
-
-  // Prevent deleting the last admin
-  if (user.role === "admin") {
-    const adminCount = await User.countDocuments({
-      role: "admin",
-      isActive: true,
-    });
-    if (adminCount <= 1) {
-      throw new ApiError(400, "Cannot delete the last active admin");
-    }
   }
 
   await User.findByIdAndDelete(id);

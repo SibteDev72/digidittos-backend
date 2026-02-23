@@ -8,7 +8,7 @@ const {
   caseStudyQueryValidation,
 } = require("./caseStudies.validation");
 const validate = require("../../middleware/validate");
-const { protect, authorize } = require("../../middleware/auth");
+const { protect } = require("../../middleware/auth");
 
 // Public routes
 router.get(
@@ -24,13 +24,11 @@ router
   .route("/")
   .get(
     protect,
-    authorize("admin", "editor", "author"),
     validate(caseStudyQueryValidation),
     caseStudiesController.getAllCaseStudies
   )
   .post(
     protect,
-    authorize("admin", "editor", "author"),
     validate(createCaseStudyValidation),
     caseStudiesController.createCaseStudy
   );
@@ -39,19 +37,16 @@ router
   .route("/:id")
   .get(
     protect,
-    authorize("admin", "editor", "author"),
     validate(caseStudyIdValidation),
     caseStudiesController.getCaseStudyById
   )
   .put(
     protect,
-    authorize("admin", "editor"),
     validate(updateCaseStudyValidation),
     caseStudiesController.updateCaseStudy
   )
   .delete(
     protect,
-    authorize("admin"),
     validate(caseStudyIdValidation),
     caseStudiesController.deleteCaseStudy
   );
