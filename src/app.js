@@ -20,6 +20,14 @@ const caseStudiesRoutes = require("./modules/case-studies/caseStudies.routes");
 
 const app = express();
 
+// Trust reverse proxy (Render, etc.) so rate limiter uses real client IPs
+app.set("trust proxy", 1);
+
+// Health check (before any middleware so it's never rate-limited)
+app.get("/api/v1/health", (req, res) => {
+  res.status(200).json({ success: true, message: "Server is running" });
+});
+
 // Security middleware
 app.use(helmet());
 app.use(
@@ -60,11 +68,6 @@ app.use("/api/v1/settings", settingsRoutes);
 app.use("/api/v1/blogs", blogsRoutes);
 app.use("/api/v1/teams", teamsRoutes);
 app.use("/api/v1/case-studies", caseStudiesRoutes);
-
-// Health check
-app.get("/api/v1/health", (req, res) => {
-  res.status(200).json({ success: true, message: "Server is running" });
-});
 
 // Error handling
 app.use(errorHandler);
