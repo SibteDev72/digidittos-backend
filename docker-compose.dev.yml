@@ -1,7 +1,5 @@
-version: "3.8"
-
 services:
-  # MongoDB (dev)
+  # MongoDB (local dev instance)
   mongo:
     image: mongo:7
     container_name: digidittos-mongo-dev
@@ -10,13 +8,13 @@ services:
     volumes:
       - mongo_data_dev:/data/db
     networks:
-      - digidittos-backend-network
+      - digidittos-dev-network
 
-  # Backend (dev with hot reload)
+  # Backend (development with hot reload)
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: digidittos-backend-dev
     ports:
       - "5000:5000"
@@ -26,20 +24,19 @@ services:
       NODE_ENV: development
       PORT: 5000
       MONGO_URI: mongodb://mongo:27017/digidittos
-      JWT_SECRET: dev-secret-key
+      JWT_SECRET: dev-secret-key-do-not-use-in-production
       JWT_EXPIRE: 7d
       CORS_ORIGIN: http://localhost:3000
     volumes:
       - ./src:/app/src
       - backend_uploads_dev:/app/uploads
-    command: npx nodemon src/server.js
     networks:
-      - digidittos-backend-network
+      - digidittos-dev-network
 
 volumes:
   mongo_data_dev:
   backend_uploads_dev:
 
 networks:
-  digidittos-backend-network:
+  digidittos-dev-network:
     driver: bridge

@@ -1,21 +1,5 @@
-version: "3.8"
-
 services:
-  # MongoDB
-  mongo:
-    image: mongo:7
-    container_name: digidittos-mongo
-    restart: unless-stopped
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-    networks:
-      - digidittos-backend-network
-    environment:
-      MONGO_INITDB_DATABASE: digidittos
-
-  # Backend API
+  # Backend API (production — connects to MongoDB Atlas)
   backend:
     build:
       context: .
@@ -24,26 +8,12 @@ services:
     restart: unless-stopped
     ports:
       - "5000:5000"
-    depends_on:
-      - mongo
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
-      PORT: 5000
-      MONGO_URI: mongodb://mongo:27017/digidittos
-      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production}
-      JWT_EXPIRE: 7d
-      CORS_ORIGIN: http://localhost:3000
-      MAX_FILE_SIZE: 5242880
-      UPLOAD_DIR: uploads
     volumes:
       - backend_uploads:/app/uploads
-    networks:
-      - digidittos-backend-network
 
 volumes:
-  mongo_data:
   backend_uploads:
-
-networks:
-  digidittos-backend-network:
-    driver: bridge
