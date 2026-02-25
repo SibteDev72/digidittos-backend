@@ -22,6 +22,4 @@ const settingsSchema = new mongoose.Schema(
   }
 );
 
-settingsSchema.index({ key: 1 });
-
 module.exports = mongoose.model("Setting", settingsSchema);

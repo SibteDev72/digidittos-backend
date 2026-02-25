@@ -88,7 +88,6 @@ teamSchema.pre("save", async function () {
   }
 });
 
-teamSchema.index({ slug: 1 });
 teamSchema.index({ isActive: 1, displayOrder: 1 });
 teamSchema.index({ name: 1 });
 

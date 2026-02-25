@@ -107,7 +107,6 @@ caseStudySchema.pre("save", async function () {
   }
 });
 
-caseStudySchema.index({ slug: 1 });
 caseStudySchema.index({ status: 1, publishedAt: -1 });
 caseStudySchema.index({ author: 1, createdAt: -1 });
 caseStudySchema.index({ tags: 1 });
