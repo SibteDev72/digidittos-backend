@@ -16,7 +16,7 @@ module.exports = {
     expire: process.env.JWT_EXPIRE || "7d",
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: (process.env.CORS_ORIGIN || "http://localhost:3000").split(",").map(s => s.trim()),
   },
   upload: {
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 5 * 1024 * 1024,
